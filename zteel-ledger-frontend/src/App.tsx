@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route, Navigate, useLocation } from "react-router-dom"
 import { getToken } from "@/lib/auth"
 
 import LoginPage from "@/pages/LoginPage"
@@ -11,25 +11,26 @@ import CategoriesPage from "@/pages/CategoriesPage"
 import PnLPage from "@/pages/PnLPage"
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
-  return getToken() ? <>{children}</> : <Navigate to="/" replace />
+  const auth = getToken()
+  // Use 'replace' to prevent the user from clicking "back" into a protected route after logout
+  return auth ? <>{children}</> : <Navigate to="/login" replace />
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  return getToken() ? <Navigate to="/shops" replace /> : <>{children}</>
+  const auth = getToken()
+  // If logged in, don't let them see the login page
+  return auth ? <Navigate to="/shops" replace /> : <>{children}</>
 }
 
 export default function App() {
+  const auth = getToken()
+
   return (
     <Routes>
-      {/* LOGIN */}
-      <Route
-        path="/"
-        element={
-          <PublicRoute>
-            <LoginPage />
-          </PublicRoute>
-        }
-      />
+      {/* Redirect root based on auth status. 
+         This prevents the '/' path from being a "blank" state.
+      */}
+      <Route path="/" element={<Navigate to={auth ? "/shops" : "/login"} replace />} />
 
       <Route
         path="/login"
@@ -40,7 +41,6 @@ export default function App() {
         }
       />
 
-      {/* SHOPS */}
       <Route
         path="/shops"
         element={
@@ -50,7 +50,6 @@ export default function App() {
         }
       />
 
-      {/* SHOP ROUTES */}
       <Route
         path="/shop/:shopId"
         element={
@@ -66,8 +65,14 @@ export default function App() {
         <Route path="pnl" element={<PnLPage />} />
       </Route>
 
-      {/* FALLBACK */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Fallback Fix: 
+         If a user hits a dead link, send them to the most logical place 
+         based on whether they are logged in or not.
+      */}
+      <Route 
+        path="*" 
+        element={<Navigate to={auth ? "/shops" : "/login"} replace />} 
+      />
     </Routes>
   )
 }
