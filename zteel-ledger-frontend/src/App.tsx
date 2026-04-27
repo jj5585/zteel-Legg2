@@ -8,19 +8,24 @@ import DashboardPage from "@/pages/DashboardPage"
 import TransactionsPage from "@/pages/TransactionsPage"
 import MembersPage from "@/pages/MembersPage"
 import CategoriesPage from "@/pages/CategoriesPage"
-import PnLPage from "@/pages/PnLPage"   // ✅ added
+import PnLPage from "@/pages/PnLPage"
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
-  return getToken() ? <>{children}</> : <Navigate to="/login" />
+  return getToken() ? <>{children}</> : <Navigate to="/" replace />
 }
 
 export default function App() {
   return (
     <Routes>
+      {/* ✅ ROOT = LOGIN */}
+      <Route path="/" element={<LoginPage />} />
+
+      {/* Optional: keep /login working */}
       <Route path="/login" element={<LoginPage />} />
 
+      {/* Protected routes */}
       <Route
-        path="/"
+        path="/shops"
         element={
           <PrivateRoute>
             <ShopsPage />
@@ -40,12 +45,11 @@ export default function App() {
         <Route path="transactions" element={<TransactionsPage />} />
         <Route path="members" element={<MembersPage />} />
         <Route path="categories" element={<CategoriesPage />} />
-
-        {/* ✅ NEW P&L ROUTE */}
         <Route path="pnl" element={<PnLPage />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/" />} />
+      {/* Catch-all */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }
