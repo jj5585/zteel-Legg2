@@ -14,16 +14,33 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   return getToken() ? <>{children}</> : <Navigate to="/" replace />
 }
 
+function PublicRoute({ children }: { children: React.ReactNode }) {
+  return getToken() ? <Navigate to="/shops" replace /> : <>{children}</>
+}
+
 export default function App() {
   return (
     <Routes>
-      {/* ✅ ROOT = LOGIN */}
-      <Route path="/" element={<LoginPage />} />
+      {/* LOGIN */}
+      <Route
+        path="/"
+        element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        }
+      />
 
-      {/* Optional: keep /login working */}
-      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        }
+      />
 
-      {/* Protected routes */}
+      {/* SHOPS */}
       <Route
         path="/shops"
         element={
@@ -33,6 +50,7 @@ export default function App() {
         }
       />
 
+      {/* SHOP ROUTES */}
       <Route
         path="/shop/:shopId"
         element={
@@ -48,7 +66,7 @@ export default function App() {
         <Route path="pnl" element={<PnLPage />} />
       </Route>
 
-      {/* Catch-all */}
+      {/* FALLBACK */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
