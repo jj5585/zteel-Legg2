@@ -31,25 +31,37 @@ export default function CategoriesPage() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-gray-900">Categories</h2>
+      <h2 className="text-xl font-bold text-[#f5f5f5] tracking-tight">Categories</h2>
       <Card>
         <CardHeader><CardTitle>Add Category</CardTitle></CardHeader>
         <CardContent className="flex gap-3">
-          <Input placeholder="e.g. Fruits, Salary, Gas..." value={name} onChange={e => setName(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && add()} />
+          <Input
+            placeholder="e.g. Fruits, Salary, Gas..."
+            value={name}
+            onChange={e => setName(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && add()}
+          />
           <Button onClick={add} disabled={adding}>{adding ? "Adding..." : "Add"}</Button>
         </CardContent>
       </Card>
       <Card>
         <CardContent className="p-0">
           {categories.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">No categories yet</div>
+            <div className="text-center py-16 text-[#6b6b6b] text-sm">No categories yet</div>
           ) : (
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-[#1f1f1f]">
               {categories.map(c => (
-                <div key={c.id} className="flex items-center justify-between px-6 py-4">
-                  <span className="text-sm font-medium text-gray-800">{c.name}</span>
-                  <button onClick={() => remove(c.id)} className="text-gray-300 hover:text-red-500 text-sm">x</button>
+                <div key={c.id} className="flex items-center justify-between px-6 py-4 hover:bg-[#1e1e1e] transition-colors group">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-orange-500/60" />
+                    <span className="text-sm font-medium text-[#f5f5f5]">{c.name}</span>
+                  </div>
+                  <button
+                    onClick={() => remove(c.id)}
+                    className="text-[#333] hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 text-lg leading-none"
+                  >
+                    ×
+                  </button>
                 </div>
               ))}
             </div>
